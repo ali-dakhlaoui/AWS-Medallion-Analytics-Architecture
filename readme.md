@@ -20,25 +20,29 @@ This project implements a fully automated, end-to-end data pipeline on AWS desig
 ## 🛠️ Technical Pipeline Breakdown
 
 ### 1. Data Ingestion (Landing Zone)
-*   **Role:** Entry point for raw, immutable data sources.
-*   **Action:** Python/Boto3 scripts automate the ingestion of `raw_users.csv`, `raw_events.csv`, and `raw_subscriptions.csv`.
+*   **Role:** Acts as a secure, immutable "holding area" for all raw data.
+*   **Action:** Uses **Python (Boto3)** to programmatically ingest `raw_users.csv`, `raw_events.csv`, and `raw_subscriptions.csv`.
+*   **Logic:** By storing data exactly as it arrives, we ensure a "System of Record" that allows for full re-processing if downstream logic changes.
 
 ### 2. Processing & Cataloging (Silver Layer)
-*   **Role:** Schema enforcement, data cleaning, and metadata management.
-*   **Tools:** AWS Glue (PySpark) & Glue Data Catalog.
-*   **Operations:** Type conversion, deduplication, and automated schema discovery via Glue Crawlers.
+*   **Role:** Cleans and structures the data to ensure reliability.
+*   **Data Cleaning:** The **PySpark** job handles "dirty" data by fixing date formats, removing duplicate IDs, and filling null values.
+*   **Schema Standardization:** Enforces strict data types (e.g., converting strings to Decimals for prices), preventing calculation errors in financial reports.
+*   **AWS Glue Catalog:** Acts as a metadata layer, allowing the data to be instantly searchable and queryable without manual indexing.
 
 ### 3. Optimized Data Lake (Gold Zone)
-*   **Role:** Hosting analytics-ready, partitioned datasets.
-*   **Impact:** Transitioned storage from CSV to **Parquet**, reducing query data scans by **over 90%** and significantly lowering AWS costs.
+*   **Role:** The high-speed storage layer designed specifically for analytics.
+*   **Parquet Conversion:** Converts CSVs to **Apache Parquet**. As a columnar format, it allows the system to read only the necessary columns, significantly speeding up execution.
+*   **Partitioning Logic:** Data is organized by `Year/Month/Day`. This allows **Amazon Athena** to skip millions of irrelevant rows, scanning only the required timeframes.
+*   **Performance Impact:** This optimization reduces data scan volume by **over 90%**, directly lowering AWS operational costs.
 
 ---
 
 ## 📈 Business KPIs Delivered
-The pipeline automates critical business metrics using SQL-driven analysis in Amazon Athena:
-*   **Monthly Recurring Revenue (MRR):** Automated tracking of subscription revenue growth.
-*   **User Engagement:** Advanced analysis of active user trends and churn rates.
-*   **Performance:** High-speed querying via partitioned datasets.
+The pipeline automates critical business metrics using SQL-driven analysis:
+*   **Monthly Recurring Revenue (MRR):** Automated tracking of subscription revenue growth and trends.
+*   **User Engagement:** Advanced analysis of active user behavior and churn rate identification.
+*   **Cost Efficiency:** Maximized performance-to-cost ratio through serverless compute and optimized storage.
 
 ---
 
@@ -51,7 +55,7 @@ The pipeline automates critical business metrics using SQL-driven analysis in Am
 ├── /sql
 │   ├── mrr_report.sql       # Athena SQL for Revenue KPIs
 │   └── user_engagement.sql  # Athena SQL for Churn analysis
-├── /data_samples            # Small-scale samples (~5-10 rows)
+├── /data_samples            # Small-scale samples for demonstration
 │   ├── raw_users_sample.csv
 │   └── mrr_output_sample.csv
 └── README.md                # Project documentation
