@@ -1,5 +1,8 @@
 # AWS Medallion Analytics Architecture: CloudScale Pipeline
 
+🚀 **Objective**
+To build a high-performance, serverless data lake that transforms raw marketplace CSVs into optimized Parquet files, enabling cost-effective SQL analytics for business KPIs.
+
 🚀 **Project Overview**
 This project implements a fully automated, end-to-end data pipeline on AWS designed to process large-scale marketplace data. By leveraging the **Medallion (Bronze/Silver/Gold) Architecture**, the pipeline transforms raw transaction data into high-performance, cost-optimized datasets for business intelligence.
 
